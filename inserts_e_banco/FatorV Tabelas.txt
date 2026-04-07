@@ -1,0 +1,62 @@
+CREATE TABLE categories (
+    category_id   SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE suppliers (
+    supplier_id   SERIAL PRIMARY KEY,
+    supplier_name VARCHAR(100) NOT NULL,
+    email         VARCHAR(100),
+    state         VARCHAR(50)
+);
+
+CREATE TABLE customers (
+    customer_id   SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    email         VARCHAR(100),
+    state         VARCHAR(2)
+);
+
+CREATE TABLE sellers (
+    seller_id     SERIAL PRIMARY KEY,
+    seller_name   VARCHAR(100) NOT NULL,
+    email         VARCHAR(100),
+    state         VARCHAR(2),
+    tx_commission INT CHECK (tx_commission >= 0)
+);
+
+CREATE TABLE products (
+    product_id    SERIAL PRIMARY KEY,
+    product_name  VARCHAR(100) NOT NULL,
+    category_id   INT NOT NULL,
+    price         NUMERIC(10,2) CHECK (price >= 0),
+    supplier_id   INT NOT NULL,
+    CONSTRAINT fk_products_category
+        FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    CONSTRAINT fk_products_supplier
+        FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+);
+
+CREATE TABLE sales (
+    sale_id       SERIAL PRIMARY KEY,
+    date          DATE NOT NULL,
+    customer_id   INT NOT NULL,
+    seller_id     INT NOT NULL,
+    total_price   NUMERIC(12,2) CHECK (total_price >= 0),
+    CONSTRAINT fk_sales_customer
+        FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    CONSTRAINT fk_sales_seller
+        FOREIGN KEY (seller_id) REFERENCES sellers(seller_id)
+);
+
+CREATE TABLE sales_items (
+    item_id       SERIAL PRIMARY KEY,
+    sales_id      INT NOT NULL,
+    product_id    INT NOT NULL,
+    quantity      INT NOT NULL CHECK (quantity > 0),
+    price         NUMERIC(10,2) CHECK (price >= 0),
+    CONSTRAINT fk_sales_items_sale
+        FOREIGN KEY (sales_id) REFERENCES sales(sale_id),
+    CONSTRAINT fk_sales_items_product
+        FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
