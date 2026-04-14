@@ -140,7 +140,7 @@ dim_fornecedor.to_sql("dim_fornecedor", engine_dw, if_exists="append", index=Fal
 
 
 # =========================
-# FATO (CORRIGIDO)
+# FATO 
 # =========================
 
 fato = df[[
@@ -156,4 +156,4 @@ fato.columns = [
 fato.to_sql("fato_vendas", engine_dw, if_exists="append", index=False)
 
 
-print("ETL FINALIZADO COM SUCESSO 🚀")
+print("ETL FINALIZADO COM SUCESSO!")
